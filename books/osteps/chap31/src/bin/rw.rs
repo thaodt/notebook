@@ -20,7 +20,7 @@ fn reader(loops: u32, lock: &RwLock<u32>) {
     for _ in 0..loops {
         thread::sleep(Duration::from_millis(SLEEP));
         let value = lock.read();
-        println!("read {}", *value);
+        log::trace!("read {}", *value);
         // lock released by RAII guard
     }
 }
@@ -30,7 +30,7 @@ fn writer(loops: u32, lock: &RwLock<u32>) {
         thread::sleep(Duration::from_millis(SLEEP));
         let mut value = lock.write();
         *value += 1;
-        println!("write {}", *value);
+        log::trace!("write {}", *value);
         // lock released by RAII guard
     }
 }
@@ -39,13 +39,16 @@ fn main() {
     let mut args = env::args();
     args.next();
 
+    // init logger
+    pretty_env_logger::init();
+
     let num_readers: u32 = parse_next_arg(&mut args, "invalid NUM_READERS");
     let num_writers: u32 = parse_next_arg(&mut args, "invalid NUM_WRITERS");
     let loops: u32 = parse_next_arg(&mut args, "invalid LOOPS");
 
     let lock = Arc::new(RwLock::new(0));
 
-    println!("[START] value: {}", *lock.read());
+    log::info!("[START] value: {}", *lock.read());
 
     let readers = (0..num_readers)
         .map(|_| {
@@ -69,7 +72,7 @@ fn main() {
         handle.join().unwrap();
     }
 
-    println!("[END] value: {}", *lock.read());
+    log::info!("[END] value: {}", *lock.read());
 }
 
 fn parse_next_arg<T: FromStr>(args: &mut Args, desc: impl Display) -> T {
@@ -81,8 +84,8 @@ fn parse_next_arg<T: FromStr>(args: &mut Args, desc: impl Display) -> T {
 }
 
 fn error_exit(err: impl Display) -> ! {
-    eprintln!("USAGE: EXEC NUM_READERS NUM_WRITERS LOOPS");
-    eprintln!("{}", err);
+    log::warn!("USAGE: EXEC NUM_READERS NUM_WRITERS LOOPS");
+    log::error!("{}", err);
     std::process::exit(1);
 }
 
