@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "books/osteps/chap31/Cargo.toml"
+    ]
+}
