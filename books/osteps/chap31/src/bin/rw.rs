@@ -12,7 +12,7 @@ use std::{
     time::Duration,
 };
 
-use chap30::Semaphore;
+use chap31::Semaphore;
 
 const SLEEP: u64 = 100;
 
@@ -40,7 +40,7 @@ fn main() {
     args.next();
 
     // init logger
-    pretty_env_logger::init();
+    pretty_env_logger::init_timed();
 
     let num_readers: u32 = parse_next_arg(&mut args, "invalid NUM_READERS");
     let num_writers: u32 = parse_next_arg(&mut args, "invalid NUM_WRITERS");

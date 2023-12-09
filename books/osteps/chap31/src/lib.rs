@@ -3,7 +3,7 @@
 //!
 //! # Examples
 //! ```
-//! use semaphore::Semaphore;
+//! use chap31::Semaphore;
 //! use std::sync::Arc;
 //! use std::thread;
 //!
